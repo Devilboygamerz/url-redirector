@@ -1,0 +1,101 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Loading...</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #080808;
+    color: #ffffff;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container {
+    text-align: center;
+}
+
+.loader {
+    width: 42px;
+    height: 42px;
+    border: 3px solid #292929;
+    border-top: 3px solid #ffffff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 25px;
+}
+
+h2 {
+    font-size: 19px;
+    font-weight: 500;
+    margin-bottom: 9px;
+}
+
+p {
+    color: #777;
+    font-size: 13px;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <div class="loader"></div>
+    <h2>Loading</h2>
+    <p>Please wait a moment...</p>
+</div>
+
+<script>
+async function redirect() {
+    try {
+        const response = await fetch("./target.json", {
+            cache: "no-store"
+        });
+
+        if (!response.ok) {
+            throw new Error("Configuration unavailable");
+        }
+
+        const data = await response.json();
+        const url = new URL(data.url);
+
+        if (!["https:", "http:"].includes(url.protocol)) {
+            throw new Error("Invalid URL");
+        }
+
+        window.location.replace(url.href);
+
+    } catch (error) {
+        document.querySelector("h2").textContent = "Connection failed";
+        document.querySelector("p").textContent =
+            "Please try again later.";
+        document.querySelector(".loader").style.display = "none";
+    }
+}
+
+redirect();
+</script>
+
+</body>
+  </html>
+  
